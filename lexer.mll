@@ -23,8 +23,5 @@ add
 * 
 EOL
 read
-stdin
-stdout
-stderr
 
 take a file as input (stdin stdout stderr)

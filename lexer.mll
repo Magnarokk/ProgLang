@@ -8,8 +8,8 @@ rule token = parse
     | '{'       {L}
 
 
-(*basic lexer skeleton
-features
+(*
+basic lexer skeleton features:
   take program and run
   {    
   } 
@@ -25,3 +25,4 @@ features
   EOL
   read
   take a file as input (stdin stdout stderr)
+*)

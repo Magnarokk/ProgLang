@@ -25,3 +25,9 @@ EOL
 read
 
 take a file as input (stdin stdout stderr)
+
+parser
+declaration
+priorities
+functionality
+declare functions

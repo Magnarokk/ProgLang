@@ -23,6 +23,5 @@ add
 * 
 EOL
 read
-dasfegreg
-oaehfoe
+
 take a file as input (stdin stdout stderr)

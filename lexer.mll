@@ -9,19 +9,19 @@ rule token = parse
 
 
 (*basic lexer skeleton
-take program and run
-{    
-} 
-, 
-['a' - 'z']* 
-: 
-union 
-inter 
-concat 
-add 
-['0'-'9']+ 
-* 
-EOL
-read
-
-take a file as input (stdin stdout stderr)
+features
+  take program and run
+  {    
+  } 
+  , 
+  ['a' - 'z']* 
+  : 
+  union 
+  inter 
+  concat 
+  add 
+  ['0'-'9']+ 
+  * 
+  EOL
+  read
+  take a file as input (stdin stdout stderr)

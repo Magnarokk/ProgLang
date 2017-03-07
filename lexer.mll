@@ -25,7 +25,16 @@ basic lexer skeleton features:
   * 
   EOL
   read
-  take a file as input (stdin stdout stderr)
+  take a file as input (stdin stderr)
+  list
+  check int
+  if then
+  break
+  while
+  boolean
+  cons
+  new set
+  let 
 
   parser
   declaration

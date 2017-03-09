@@ -7,8 +7,6 @@ rule token = parse
     | ['\n' ]  { EOL }
     | '{'       {L}
 
-
-<<<<<<< HEAD
 (*
 basic lexer skeleton features:
   take program and run

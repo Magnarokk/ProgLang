@@ -14,13 +14,13 @@ rule token = parse
     | 'I'       {INTER}
     | 'C'       {CONCAT}
     | ['0' - '9']+ as num {INT(int_of_string num)}
-    |
+    | "READFROM"  {STDIN}
+    | "WRITETO"   {STDOUT}  
+    (* | "RAISE" *)
 
 (*
 basic lexer skeleton features:
   take program and run
-  read
-  take a file as input (stdin stderr)
   list
   boolean
   new set

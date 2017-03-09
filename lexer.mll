@@ -18,8 +18,8 @@ rule token = parse
     | eof                 {raise Eof}
 and firstrun = parse 
     | "READFROM"          {STDIN}
-    | _                   {Lexing.lexeme lexbuf}
-    
+    | _            as str {OTHERS(str)}
+
 (*
 basic lexer skeleton features:
   take program and run

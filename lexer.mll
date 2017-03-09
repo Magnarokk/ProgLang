@@ -25,11 +25,8 @@ basic lexer skeleton features:
   read
   take a file as input (stdin stderr)
   list
-  check int
   boolean
-  cons
   new set
-  let 
 
   parser
   declaration

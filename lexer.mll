@@ -6,22 +6,19 @@ rule token = parse
       [' ' '\t']     { token lexbuf }     (* skip blanks *)
     | ['\n' ]  { EOL }
     | '{'       {L}
+    | '}'       {RCURLY}
+    | ','       {COMMA}
+    | ['a' - 'z']* as lt {LETTER(lt)}
+    | ':'       {EMPTY}
+    | 'U'       {UNION}
+    | 'I'       {INTER}
+    | 'C'       {CONCAT}
+    | ['0' - '9']+ as num {INT(int_of_string num)}
+    |
 
 (*
 basic lexer skeleton features:
   take program and run
-  {    
-  } 
-  , 
-  ['a' - 'z']* 
-  : 
-  union 
-  inter 
-  concat 
-  add 
-  ['0'-'9']+ 
-  * 
-  EOL
   read
   take a file as input (stdin stderr)
   list

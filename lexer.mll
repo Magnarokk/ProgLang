@@ -28,9 +28,6 @@ basic lexer skeleton features:
   take a file as input (stdin stderr)
   list
   check int
-  if then
-  break
-  while
   boolean
   cons
   new set

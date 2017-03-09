@@ -1,0 +1,2 @@
+%token EOL
+%token LCURLY RCURLY COMMA LETTER

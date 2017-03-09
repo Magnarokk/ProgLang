@@ -3,20 +3,19 @@ open Parser        (* The type token is defined in parser.mli *)
 exception Eof
 }
 rule token = parse
-      [' ' '\t']     { token lexbuf }     (* skip blanks *)
-    | ['\n' ]  { EOL }
-    | '{'       {LCURLY}
-    | '}'       {RCURLY}
-    | ','       {COMMA}
-    | ['a' - 'z']* as lt {LETTER(lt)}
-    | ':'       {EMPTY}
-    | 'U'       {UNION}
-    | 'I'       {INTER}
-    | 'C'       {CONCAT}
+      [' ' '\t']          {token lexbuf}    (* skip blanks *)
+    | ['\n' ]             {EOL}
+    | '{'                 {LCURLY}
+    | '}'                 {RCURLY}
+    | ','                 {COMMA}
+    | ['a' - 'z']* as lt  {LETTER(lt)}
+    | ':'                 {EMPTY}
+    | 'U'                 {UNION}
+    | 'I'                 {INTER}
+    | 'C'                 {CONCAT}
     | ['0' - '9']+ as num {INT(int_of_string num)}
-    | "READFROM"  {STDIN}
-    | "WRITETO"   {STDOUT}  
-    (* | "RAISE" *)
+    | "READFROM"          {STDIN}
+    | "WRITETO"           {STDOUT}
 
 (*
 basic lexer skeleton features:

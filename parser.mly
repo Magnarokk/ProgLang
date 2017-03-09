@@ -25,3 +25,12 @@ main:
 ;
 setCreation:
     LCURLY setCreation RCURLY     { SS.empty }
+expr:
+    | LETTER                {$1}
+    | INT                   {$1}
+    | EMPTY                 {$1}
+    | expr COMMA expr       {$1, $3}
+    | LCURLY expr RCURLY    {$2}
+    | expr UNION expr       {union($1 $3)}
+    | expr INTER expr       {inter($1 $3)}
+    | expr CONCAT expr      {concat($1 $3)}

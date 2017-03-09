@@ -5,7 +5,7 @@ exception Eof
 rule token = parse
       [' ' '\t']     { token lexbuf }     (* skip blanks *)
     | ['\n' ]  { EOL }
-    | '{'       {L}
+    | '{'       {LCURLY}
     | '}'       {RCURLY}
     | ','       {COMMA}
     | ['a' - 'z']* as lt {LETTER(lt)}

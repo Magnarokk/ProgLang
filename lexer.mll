@@ -14,9 +14,12 @@ rule token = parse
     | 'I'                 {INTER}
     | 'C'                 {CONCAT}
     | ['0' - '9']+ as num {INT(int_of_string num)}
-    | "READFROM"          {STDIN}
     | "WRITETO"           {STDOUT}
-
+    | eof                 {raise Eof}
+and firstrun = parse 
+    | "READFROM"          {STDIN}
+    | _                   {Lexing.lexeme lexbuf}
+    
 (*
 basic lexer skeleton features:
   take program and run

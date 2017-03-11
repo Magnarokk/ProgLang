@@ -41,6 +41,7 @@
 %start firstrun
 %type <string> firstrun
 %%
+/* add types in own section */
 firstrun:
       STDIN firstrun     {$1 ^ (input_line stdin) ^ $3}
     | OTHERS firstrun    { $1 }

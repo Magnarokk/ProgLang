@@ -41,5 +41,6 @@ let newEmptySet =
 (* convert sets to lists for ease and interate through both concat each element *)
 (* up to int. Then convert back to set *)
 
+(*type checker *)
 (* evaluator *)
 let rec eval env e = match e with

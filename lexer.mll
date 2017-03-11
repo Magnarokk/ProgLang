@@ -4,7 +4,9 @@ exception Eof
 
 let string_of_set s = String.sub 1 ((String.length s)-1);;
 let string_of_id s = String.sub 1 1;; 
+
 }
+(* add types *)
 rule token = parse
       [' ' '\t' '\n']          {token lexbuf}    (* skip blanks *)
     | '{'                 {LCURLY}

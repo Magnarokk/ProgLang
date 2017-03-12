@@ -47,4 +47,6 @@ let newEmptySet =
 let rec eval1 env e = match e with
     | (sdlVar s) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)
     | (sdlNum n) -> raise Terminated
-    | (set s) -> 
+    | (set s) -> raise Terminated 
+    
+    | (sdlLet(x,e1,e2)) when -> 

@@ -4,7 +4,6 @@ type sdlTerm =
      sdlLet of string * sdlTerm * sdlTerm
    | sdlVar of string
    | sdlNum of int 
-   | emptySet of SS.t
    | union of sdlTerm * sdlTerm * string
    | iter of sdlTerm * sdlTerm * string
    | concat of sdlTerm * sdlTerm * string

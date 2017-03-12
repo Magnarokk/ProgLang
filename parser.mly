@@ -32,7 +32,9 @@
 %token UNION ITER CONCAT
 %token <int> INT
 %token STDIN STDOUT
+%left SEQ
 %left UNION INTER CONCAT
+%nonassoc ASSIGN IN
 %left COMMA
 %nonassoc EOL
 %left STDIN

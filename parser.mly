@@ -29,11 +29,13 @@
 %token EOF
 %token LCURLY RCURLY COMMA EMPTY
 %token <string> LETTER
-%token UNION ITER CONCAT
+%token UNION ITER CONCAT PREFIX POSTFIX REDUCE
 %token <int> INT
 %token STDIN STDOUT
 %left SEQ
-%left UNION INTER CONCAT
+%nonassoc REDUCE
+%left CONCAT PREFIX POSTFIX
+%left UNION INTER
 %nonassoc ASSIGN IN
 %left COMMA
 %nonassoc EOL
@@ -61,11 +63,14 @@ expr2:
     | setCreation                    { $1 }
 setCreation:
       LCURLY setExpr RCURLY          { $2 }
-    | STARSET                        { set(Sdl.newStarSet($1))}
+    | STARSET IDENT                  { set(Sdl.newStarSet($1, $2)) }
     | LCURLY RCURLY                  { set(Sdl.newEmptySet) }
     | setCreation UNION setCreation  { sdlUnion($1, $3) }
-    | setCreation INTER setCreation  { sdlInter($1, $3)}
-    | setCreation CONCAT setCreation { sdlConcat($1, $3)}
+    | setCreation INTER setCreation  { sdlInter($1, $3) }
+    | setCreation CONCAT setCreation { sdlConcat($1, $3) }
+    | setCreation PREFIX setCreation { sdlPrefix($1, $3) }
+    | setCreation POSTFIX setCreation { sdlPostfix($1, $3) }
+    | REDUCE setCreation              { sdlReduce($1) }
 ;
 setExpr:
     | LETTER                { set(Sdl.newSet($1)) }

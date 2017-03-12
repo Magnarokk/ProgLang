@@ -4,9 +4,12 @@ type sdlTerm =
      sdlLet of string * sdlTerm * sdlTerm
    | sdlVar of string
    | sdlNum of int 
-   | union of sdlTerm * sdlTerm * string
-   | iter of sdlTerm * sdlTerm * string
-   | concat of sdlTerm * sdlTerm * string
+   | sdlUnion of sdlTerm * sdlTerm
+   | sdlInter of sdlTerm * sdlTerm
+   | sdlConcat of sdlTerm * sdlTerm
+   | sdlPrefix of sdlTerm * sdlTerm
+   | sdlPostfix of sdlTerm * sdlTerm
+   | sdlReduce of SS.t
    | set of SS.t
    | seq of sdlTerm * sdlTerm 
 

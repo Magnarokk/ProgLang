@@ -41,7 +41,8 @@ let newStarSet str count =
 
 (* create union function *)
 let union set1 set2 =
-    print_set (SS.union set1 set2);;
+    let newSet = SS.union set1 set2;;
+    let size newSet = List.fold_left (fun acc _ -> acc + 1) 0 newSet;;
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
 (* create iter function *)

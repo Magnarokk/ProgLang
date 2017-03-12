@@ -40,6 +40,8 @@ let newStarSet str count =
 (* [] prints nothing, [] sdlterm print sdlterm (vice versa), sdlterm sdlterm print both sdlterm *)
 
 (* create union function *)
+let union set1 set2 =
+    print_set (SS.union set1 set2);;
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
 (* create iter function *)

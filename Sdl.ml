@@ -24,7 +24,7 @@ let newSet str =
 let newEmptySet =
     SS.empty;;
 
-(* create letter* set *)
+(* create Starset *)
 (* args: string int returns: set (SS.t) with int elements*)
 
 (* create print function for language *)

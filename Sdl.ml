@@ -17,13 +17,22 @@ type valContext = Env of (string * sdlTerm) list
 
 (* create new set from string *)
 let newSet str =
-        SS.singleton str;;
+    SS.singleton str;;
 
 (*create empty set *)
 let newEmptySet =
     SS.empty;;
 
 (* create Starset *)
+let newStarSet str count =
+    let LetterStarSet = SS.empty in
+    let element = "" in
+    let rec makeSet element count =
+        if int > 1 then
+            List.Fold_Right SS.add element LetterStarSet
+            makeSet element ^ "a" count-1
+        else LetterStarSet
+    in makeSet "" count;;
 (* args: string int returns: set (SS.t) with int elements*)
 
 (* create print function for language *)
@@ -31,12 +40,17 @@ let newEmptySet =
 (* [] prints nothing, [] sdlterm print sdlterm (vice versa), sdlterm sdlterm print both sdlterm *)
 
 (* create union function *)
+let union set1 set2 =
+    SS.union set1 set2
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
-(* create iter function *)
+(* create inter function *)
+let union set1 set2 =
+    SS.inter set1 set2
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
 (* create concat function *)
+
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 (* convert sets to lists for ease and interate through both concat each element *)
 (* up to int. Then convert back to set *)

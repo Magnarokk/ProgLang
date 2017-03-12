@@ -23,17 +23,16 @@ let newSet str =
 let newEmptySet =
     SS.empty;;
 
-(* create letter* set *)
-let newLetterStarSet str count =
-    let LetterSet = SS.empty in
+(* create Starset *)
+let newStarSet str count =
+    let LetterStarSet = SS.empty in
     let element = "" in
     let rec makeSet element count =
-        if int > 1 then SS.add element LetterSet
-        makeSet element ^ "a" count -1
-        else return LetterSet
-        in;;
-
-(* create Starset *)
+        if int > 1 then
+            List.Fold_Right SS.add element LetterStarSet
+            makeSet element ^ "a" count-1
+        else LetterStarSet
+    in makeSet "" count;;
 (* args: string int returns: set (SS.t) with int elements*)
 
 (* create print function for language *)

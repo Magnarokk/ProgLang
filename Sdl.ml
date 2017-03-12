@@ -23,7 +23,6 @@ let newSet str =
 let newEmptySet =
     SS.empty;;
 
-<<<<<<< HEAD
 (* create letter* set *)
 let newLetterStarSet str count =
     let LetterSet = SS.empty in
@@ -33,9 +32,8 @@ let newLetterStarSet str count =
         makeSet element ^ "a" count -1
         else return LetterSet
         in;;
-=======
+
 (* create Starset *)
->>>>>>> 3e870e4984c0e83a2467a836dba4e26171a6cf82
 (* args: string int returns: set (SS.t) with int elements*)
 
 (* create print function for language *)

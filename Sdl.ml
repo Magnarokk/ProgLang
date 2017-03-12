@@ -6,7 +6,6 @@ type sdlTerm =
      sdlLet of string * sdlTerm * sdlTerm
    | sdlVar of string
    | sdlNum of int 
-   | emptySet of SS.t
    | union of sdlTerm * sdlTerm * string
    | iter of sdlTerm * sdlTerm * string
    | concat of sdlTerm * sdlTerm * string
@@ -24,6 +23,7 @@ let newSet str =
 let newEmptySet =
     SS.empty;;
 
+<<<<<<< HEAD
 (* create letter* set *)
 let newLetterStarSet str count =
     let LetterSet = SS.empty in
@@ -33,10 +33,14 @@ let newLetterStarSet str count =
         makeSet element ^ "a" count -1
         else return LetterSet
         in;;
+=======
+(* create Starset *)
+>>>>>>> 3e870e4984c0e83a2467a836dba4e26171a6cf82
 (* args: string int returns: set (SS.t) with int elements*)
 
 (* create print function for language *)
 (* args: (sdlTerm, sdlTerm) (set pair) and prints it out in correct format to sdout *)
+(* [] prints nothing, [] sdlterm print sdlterm (vice versa), sdlterm sdlterm print both sdlterm *)
 
 (* create union function *)
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
@@ -50,6 +54,7 @@ let newLetterStarSet str count =
 (* up to int. Then convert back to set *)
 
 (*type checker *)
+
 (* evaluator *)
 let rec eval1 env e = match e with
     | (sdlVar s) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)

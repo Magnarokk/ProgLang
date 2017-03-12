@@ -60,7 +60,7 @@ expr2:
 setCreation:
       LCURLY setExpr RCURLY          { $2 }
     | STARSET                        { set(Sdl.newStarSet($1))}
-    | LCURLY RCURLY                  { emptySet(Sdl.newEmptySet) }
+    | LCURLY RCURLY                  { Set(Sdl.newEmptySet) }
     | setCreation UNION IDENT setCreation  { union($1, $4, $3) }
     | setCreation INTER IDENT setCreation  { iter($1, $4, $3)}
     | setCreation CONCAT IDENT setCreation { concat($1, $4, $3)}

@@ -2,7 +2,7 @@ module SS = Set.Make(String);;
 
 type sdlTerm =
      sdlLet of string * sdlTerm * sdlTerm
-   | sdlVar of SS.t
+   | sdlVar of string
    | sdlNum of int 
    | emptySet of SS.t
    | union of sdlTerm * sdlTerm * string

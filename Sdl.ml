@@ -28,7 +28,7 @@ let newEmptySet =
 (* args: string int returns: set (SS.t) with int elements*)
 
 (* create print function for language *)
-(* args: sdlTerm (set) and prints it out in correct format to sdout *)
+(* args: (sdlTerm, sdlTerm) (set pair) and prints it out in correct format to sdout *)
 
 (* create union function *)
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
@@ -43,4 +43,7 @@ let newEmptySet =
 
 (*type checker *)
 (* evaluator *)
-let rec eval env e = match e with
+let rec eval1 env e = match e with
+    | (sdlVar s) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)
+    | (sdlNum n) -> raise Terminated
+    | (set s) -> 

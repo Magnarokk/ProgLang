@@ -18,13 +18,21 @@ type valContext = Env of (string * sdlTerm) list
 
 (* create new set from string *)
 let newSet str =
-        SS.singleton str;;
+    SS.singleton str;;
 
 (*create empty set *)
 let newEmptySet =
     SS.empty;;
 
 (* create letter* set *)
+let newLetterStarSet str count =
+    let LetterSet = SS.empty in
+    let element = "" in
+    let rec makeSet element count =
+        if int > 1 then SS.add element LetterSet
+        makeSet element ^ "a" count -1
+        else return LetterSet
+        in;;
 (* args: string int returns: set (SS.t) with int elements*)
 
 (* create print function for language *)

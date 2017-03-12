@@ -15,6 +15,10 @@ type sdlTerm =
    | set of SS.t
    | seq of sdlTerm * sdlTerm 
 
+type option =
+      None
+    | Some of SS.t
+    
 (* for storing variable values *)
 type valContext = Env of (string * sdlTerm) list
 
@@ -77,7 +81,7 @@ let concat set1 set2 =
 let rec eval1 env e = match e with
     | (sdlVar s) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)
     | (sdlNum n) -> raise Terminated
-    | (set s) -> raise Terminated 
+    | ((set s),(set n)) -> raise Terminated 
     
     | (sdlLet(x,e1,e2)) when (isValue(e1)) -> (e2, addBinding emv x e1)
     | (sdlLet(x,e1,e2))                    -> let (e1', env') = (eval1 env e1) in (sdlLet(x,e1',e2), env')
@@ -102,8 +106,10 @@ let rec eval1 env e = match e with
     | (sdlPostfix(set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (sdlPostfix(set(x),e2'),env')
     | (sdlPostfix(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (sdlPostfix(e1',e2),env')
 
-    | (sdlReduce(set(x))               -> (set(reduce(x)), env)
-    | (sdlReduce(e1))                  -> let (e1',env') = (eval1 env e1) in (sdlReduce(e1'),env')
+    | (sdlReduce(set(x))                       -> (set(reduce(x)), env)
+    | (sdlReduce(e1))                          -> let (e1',env') = (eval1 env e1) in (sdlReduce(e1'),env')
+
+    | (seq(set(x),set(y)))                     ->  
 
     
 

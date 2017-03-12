@@ -45,12 +45,12 @@ let union set1 set2 =
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
 (* create inter function *)
-let union set1 set2 =
+let inter set1 set2 =
     SS.inter set1 set2
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
 (* create concat function *)
-
+let concat
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 (* convert sets to lists for ease and interate through both concat each element *)
 (* up to int. Then convert back to set *)

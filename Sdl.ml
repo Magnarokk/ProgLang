@@ -6,9 +6,9 @@ type sdlTerm =
      sdlLet of string * sdlTerm * sdlTerm
    | sdlVar of string
    | sdlNum of int 
-   | union of sdlTerm * sdlTerm * string
-   | iter of sdlTerm * sdlTerm * string
-   | concat of sdlTerm * sdlTerm * string
+   | sdlUnion of sdlTerm * sdlTerm * string
+   | sdlInter of sdlTerm * sdlTerm * string
+   | sdlConcat of sdlTerm * sdlTerm * string
    | set of SS.t
    | seq of sdlTerm * sdlTerm 
 
@@ -17,7 +17,7 @@ type valContext = Env of (string * sdlTerm) list
 
 (* create new set from string *)
 let newSet str =
-    SS.singleton str;;
+        SS.singleton str;;
 
 (*create empty set *)
 let newEmptySet =
@@ -63,4 +63,8 @@ let rec eval1 env e = match e with
     | (sdlNum n) -> raise Terminated
     | (set s) -> raise Terminated 
     
-    | (sdlLet(x,e1,e2)) when -> 
+    | (sdlLet(x,e1,e2)) when (isValue(e1)) -> (e2, addBinding emv x e1)
+    | (sdlLet(x,e1,e2))                    -> let (e1', env') = (eval1 env e1) in (sdlLet(x,e1',e2), env')
+
+    | (sdlUnion(set(x),set(y)))               -> (set(union(x,y)), env)
+    | (sdlUnion(set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (sdlUnion(set(x),e2'),env')

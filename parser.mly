@@ -63,12 +63,12 @@ setCreation:
       LCURLY setExpr RCURLY          { $2 }
     | STARSET                        { set(Sdl.newStarSet($1))}
     | LCURLY RCURLY                  { set(Sdl.newEmptySet) }
-    | setCreation UNION IDENT setCreation  { union($1, $4, $3) }
-    | setCreation INTER IDENT setCreation  { iter($1, $4, $3)}
-    | setCreation CONCAT IDENT setCreation { concat($1, $4, $3)}
+    | setCreation UNION setCreation  { sdlUnion($1, $3) }
+    | setCreation INTER setCreation  { sdlInter($1, $3)}
+    | setCreation CONCAT setCreation { sdlConcat($1, $3)}
 ;
 setExpr:
     | LETTER                { set(Sdl.newSet($1)) }
     | EMPTY                 { set(Sdl.newSet("")) }
-    | setExpr COMMA setExpr { union($1,$3) }
+    | setExpr COMMA setExpr { sdlUnion($1,$3) }
 ;

@@ -50,7 +50,16 @@ let inter set1 set2 =
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
 (* create concat function *)
-let concat
+let concat set1 set2 =
+    let list1 = SS.elements set1 in
+    let list2 = SS.elements set2 in
+    let pairOfList = {list1 list2}
+    let rec zip pairOfList = match pairOfList with 
+      [] , [] -> []
+    | [] , _  -> _
+    | _  , [] -> _
+    | (l :: ls) , (r :: rs) -> ((l,r) :: zip (ls,rs))
+    of_list 
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 (* convert sets to lists for ease and interate through both concat each element *)
 (* up to int. Then convert back to set *)

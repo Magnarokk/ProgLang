@@ -69,8 +69,8 @@ let newStarSet str count =
             makeSet (element^"a") (counter-1) end 
         else
             !letterStarSet;
-    in makeSet "" count;;
-
+    in makeSet "" count
+;;
 (* args: string int returns: set (SS.t) with int elements*)
 
 (* create print function for language *)
@@ -156,7 +156,8 @@ let rec typeOf env e = match e with
             | _ -> raise TypeError )
 ;;
 
-let typeProg e = typeOf (Env []) e ;;
+let typeProg e = typeOf (Env []) e
+;;
     
 (* evaluator *)
 let rec eval1 env e = match e with
@@ -194,7 +195,8 @@ let rec eval1 env e = match e with
     | (Seq(Set(x),e2))                          -> let (e2',env') = (eval1 env e2) in (Seq(Set(x),e2'),env')
     | (Seq(e1,e2))                              -> let (e1',env') = (eval1 env e1) in (Seq(e1',e2),env')
 
-    | _ -> raise Terminated ;;
+    | _ -> raise Terminated
+;;
 
 (* loop through program *)
 let rec evalloop env e = 
@@ -205,5 +207,6 @@ let rec evalloop env e =
 ;;
 
 (* initiate eval *)
-let eval e = evalloop (Env []) e ;; 
+let eval e = evalloop (Env []) e
+;; 
 

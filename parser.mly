@@ -1,17 +1,6 @@
 %{
-    module SS = Set.Make(String)
-    open Sdl
 
-    let newSet str =
-        SS.singleton str
-    
-    let addStr str1 str2 =
-        str1 ^ str2
-
-    let addSetStr modStr set =
-        SS.iter (addStr modStr) set
-        
-    let rec letterStar letter = 
+    open Sdl ;;
 
     let print_set set =
         let list = SS.elements set in
@@ -25,55 +14,69 @@
 
         
 %}
-
+%token LANGTYPE INTTYPE
 %token EOF
 %token LCURLY RCURLY COMMA EMPTY
-%token <string> LETTER
+%token <string> LETTER FIXLETTER
 %token UNION ITER CONCAT PREFIX POSTFIX REDUCE
 %token <int> INT
 %token STDIN STDOUT
 %left SEQ
+%nonassoc STARSET
 %nonassoc REDUCE
 %left CONCAT PREFIX POSTFIX
 %left UNION INTER
 %nonassoc ASSIGN IN
 %left COMMA
 %nonassoc EOL
+%nonassoc OTHERS
 %left STDIN
 %start main
 %type <Sdl.sdlTerm> main
 %start firstrun
 %type <string> firstrun
+%type <Sdl.sdlType> type_spec
+%type <Sdl.SS.t>  setCreation
 %%
 /* add types in own section */
 firstrun:
       STDIN firstrun     {$1 ^ (input_line stdin) ^ $3}
     | OTHERS firstrun    { $1 }
     | EOF
+;
+
 main:
     expr EOF                      { $1 }
 ;
+
+type_spec:
+      INTTYPE                        { SdlInt }
+    | LANGTYPE                       { SdlLang }
+;;
+
 expr:
-      IDENT ASSIGN expr2 IN expr     { sdlLet($1,$3,$5)}
+      ASSIGN type_spec IDENT expr2 IN expr { SdlLet($3,$4,$6,$2)}
     | setCreation                    { $1 }
-    | IDENT                          { sdlVar($1) }
-    | setCreation SEQ setCreation    { seq($1,$3)}
+    | IDENT                          { SdlVar($1) }
+    | setCreation SEQ setCreation    { Seq($1,$3)}
+
 expr2:
-      INT                            { sdlNum($1) }
+      INT                            { SdlNum($1) }
     | setCreation                    { $1 }
+;
 setCreation:
       LCURLY setExpr RCURLY          { $2 }
-    | STARSET IDENT                  { set(Sdl.newStarSet($1, $2)) }
-    | LCURLY RCURLY                  { set(Sdl.newEmptySet) }
-    | setCreation UNION setCreation  { sdlUnion($1, $3) }
-    | setCreation INTER setCreation  { sdlInter($1, $3) }
-    | setCreation CONCAT setCreation { sdlConcat($1, $3) }
-    | setCreation PREFIX setCreation { sdlPrefix($1, $3) }
-    | setCreation POSTFIX setCreation { sdlPostfix($1, $3) }
-    | REDUCE setCreation              { sdlReduce($1) }
+    | STARSET IDENT                  { Set(Sdl.newStarSet($1, $2)) }
+    | LCURLY RCURLY                  { Set(Sdl.newEmptySet) }
+    | setCreation UNION setCreation  { SdlUnion($1, $3) }
+    | setCreation INTER setCreation  { SdlInter($1, $3) }
+    | setCreation CONCAT setCreation { SdlConcat($1, $3) }
+    | setCreation PREFIX FIXLETTER { SdlPrefix($1, $3) }
+    | setCreation POSTFIX FIXLETTER { SdlPostfix($1, $3) }
+    | REDUCE setCreation              { SdlReduce($1) }
 ;
 setExpr:
-    | LETTER                { set(Sdl.newSet($1)) }
-    | EMPTY                 { set(Sdl.newSet("")) }
-    | setExpr COMMA setExpr { sdlUnion($1,$3) }
+    | LETTER                { Set(Sdl.newSet($1)) }
+    | EMPTY                 { Set(Sdl.newSet("")) }
+    | setExpr COMMA setExpr { SdlUnion($1,$3) }
 ;

@@ -13,16 +13,22 @@ rule token = parse
     | '}'                 {RCURLY}
     | ','                 {COMMA}
     | ['a' - 'z']* as lt  {LETTER(lt)}
+
     | 'F'['a' - 'z'] as fixLt {FIXLETTER(string_of_id fixLt)}
     | '*'['a' - 'z']+ as st {STARSET(string_of_set st)}
     | '£'['a'-'z'] as id  {IDENT(string_of_id id)}
     | ':'                 {EMPTY}
+
     | 'U'                 {UNION}
     | 'I'                 {INTER}
     | 'C'                 {CONCAT}
     | "PR"                {PREFIX}
     | 'R'                 {REDUCE}
     | "PO"                {POSTFIX}
+
+    | '@'                 {LANGTYPE}
+    | '#'                 {INTTYPE}
+
     | ['0' - '9']+ as num {INT(int_of_string num)}
     | "ASS2"              {ASSIGN}
     | "THISSTUFF"         {IN}

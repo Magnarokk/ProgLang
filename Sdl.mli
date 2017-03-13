@@ -1,20 +1,25 @@
 module SS = Set.Make(String);;
 
+type sdlType = SdlInt | SdlLang
+
 type sdlTerm =
-     sdlLet of string * sdlTerm * sdlTerm
-   | sdlVar of string
-   | sdlNum of int 
-   | sdlUnion of sdlTerm * sdlTerm
-   | sdlInter of sdlTerm * sdlTerm
-   | sdlConcat of sdlTerm * sdlTerm
-   | sdlPrefix of sdlTerm * sdlTerm
-   | sdlPostfix of sdlTerm * sdlTerm
-   | sdlReduce of SS.t
-   | set of SS.t
-   | seq of sdlTerm * sdlTerm 
+     SdlLet of string * sdlTerm * sdlTerm * sdlType
+   | SdlVar of string
+   | SdlNum of int 
+   | SdlUnion of sdlTerm * sdlTerm
+   | SdlInter of sdlTerm * sdlTerm
+   | SdlConcat of sdlTerm * sdlTerm
+   | SdlPrefix of sdlTerm * string
+   | SdlPostfix of sdlTerm * string
+   | SdlReduce of SS.t
+   | Set of SS.t
+   | Seq of sdlTerm * sdlTerm 
 
    val newSet : SS.elt -> SS.t
    val newEmptySet : SS.t
    val newStarSet : SS.elt -> int -> SS.t
-   val eval : sdlTerm -> sdlTerm
+
    val print_term : sdlTerm -> unit
+
+   val typeProg : sdlTerm -> sdlType
+   val eval : sdlTerm -> sdlTerm

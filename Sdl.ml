@@ -101,7 +101,7 @@ let concat set1 set2 =
 
 (* prefix adds a letter to the start of every element in set *)
 (* postfix *)
-(* reduce: reduces set to specified size*)
+(* reduce: reduces set to specified size, also order elements alphabetically before reduction*)
 
 
 (*type checker *)

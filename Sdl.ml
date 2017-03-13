@@ -1,3 +1,8 @@
+exception LookupError ;;
+exception UnboundVariableError ;;
+exception Terminated ;;
+
+
 (* for using sets *)
 module SS = Set.Make(String);;
 
@@ -17,7 +22,7 @@ type sdlTerm =
 
 type option =
       None
-    | Some of SS.t
+    | Some of sdlTerm
     
 (* for storing variable values *)
 type valContext = Env of (string * sdlTerm) list
@@ -79,9 +84,9 @@ let concat set1 set2 =
 
 (* evaluator *)
 let rec eval1 env e = match e with
-    | (sdlVar s) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)
-    | (sdlNum n) -> raise Terminated
-    | ((set s),(set n)) -> raise Terminated 
+    | (sdlVar (s)) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)
+    | (sdlNum (n)) -> raise Terminated
+    | (set(s))     -> raise Terminated
     
     | (sdlLet(x,e1,e2)) when (isValue(e1)) -> (e2, addBinding emv x e1)
     | (sdlLet(x,e1,e2))                    -> let (e1', env') = (eval1 env e1) in (sdlLet(x,e1',e2), env')
@@ -106,11 +111,14 @@ let rec eval1 env e = match e with
     | (sdlPostfix(set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (sdlPostfix(set(x),e2'),env')
     | (sdlPostfix(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (sdlPostfix(e1',e2),env')
 
-    | (sdlReduce(set(x))                       -> (set(reduce(x)), env)
-    | (sdlReduce(e1))                          -> let (e1',env') = (eval1 env e1) in (sdlReduce(e1'),env')
+    | (sdlReduce(set(x))                        -> (set(reduce(x)), env)
+    | (sdlReduce(e1))                           -> let (e1',env') = (eval1 env e1) in (sdlReduce(e1'),env')
 
-    | (seq(set(x),set(y)))                     ->  
+    | (seq(set(x),set(y)))                      -> raise Terminated
+    | (seq(set(x),e2))                          -> let (e2',env') = (eval1 env e2) in (seq(set(x),e2'),env')
+    | (seq(e1,e2))                              -> let (e1',env') = (eval1 env e1) in (seq(e1',e2),env')
 
+    | _ -> raise Terminated ;;
     
 
 

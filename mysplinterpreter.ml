@@ -20,6 +20,6 @@ let () = print_string "Clap Clap Clap finally good syntax"; print_newline() in
 let _ = typeProg parsedProg in
 let () = print_string "Aww well done you got the type all right"
 let result = eval parsedProg in
-let () = print_string "Finally got to the evaluation step, here is your reward =>"; print_set result; print_newline(); print_string "There is no reward, only laguages, you've been bamboozled"; 
+let () = print_string "Finally got to the evaluation step, here is your reward =>"; print_term result; print_newline(); print_string "There is no reward, only laguages, you've been bamboozled"; 
 flush stdout
 

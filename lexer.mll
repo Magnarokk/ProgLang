@@ -37,17 +37,3 @@ rule lexer_token = parse
 and lexer_firstrun = parse 
     | "READFROM"          {STDIN}
     | _                   {OTHERS(Lexing.lexeme lexbuf)}
-
-(*
-basic lexer skeleton features:
-  take program and run
-  list
-  boolean
-  new set
-
-  parser
-  declaration
-  priorities
-  functionality
-  declare functions
-*)

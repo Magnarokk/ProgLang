@@ -3,6 +3,7 @@ exception UnboundVariableError ;;
 exception Terminated ;;
 exception StuckTerm ;;
 
+open Printf;;
 (* for using sets *)
 module SS = Set.Make(String);;
 
@@ -76,6 +77,7 @@ let newStarSet str count =
 (* create print function for language *)
 (* args: (sdlTerm, sdlTerm) (set pair) and prints it out in correct format to sdout *)
 (* [] prints nothing, [] sdlterm print sdlterm (vice versa), sdlterm sdlterm print both sdlterm *)
+    
 
 (* union function *)
 let union set1 set2 =
@@ -98,7 +100,7 @@ let concat set1 set2 =
       [] , [] -> []
     | [] , ls  -> ls
     | ls  , [] -> ls
-    | (l :: ls) , (r :: rs) -> (l ^ r) :: zip (ls,rs)) in
+    | (l :: ls) , (r :: rs) -> ((l ^ r) :: zip (ls,rs)) in
     SS.of_list (zip pairList)
 ;;
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
@@ -108,6 +110,7 @@ let concat set1 set2 =
 (* prefix adds a letter to the start of every element in set *)
 (* postfix *)
 (* reduce: reduces set to specified size*)
+
 
 (*type checker *)
 let rec typeOf env e = match e with
@@ -161,7 +164,6 @@ let typeProg e = typeOf (Env []) e ;;
 (* evaluator *)
 let rec eval1 env e = match e with
     | (SdlVar (s)) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)
-    | (SdlNum (n)) -> raise Terminated
     | (Set(s))     -> raise Terminated
     
     | (SdlLet(x,e1,e2,t)) when (isValue(e1)) -> (e2, addBinding emv x e1)
@@ -206,4 +208,21 @@ let rec evalloop env e =
 
 (* initiate eval *)
 let eval e = evalloop (Env []) e ;; 
+
+let print_term val = match val with 
+    | (Set s) -> print_set s
+    | (Seq(Set(x),Set(y))) -> print_set x; print_newline(); print_set y 
+;;
+
+(* prints set in correct form *)
+let print_set set =
+        let list = SS.elements set in
+        print_string "{";
+        let rec aux l =
+            match l with
+                  [] -> print_string "}"
+                | [x;y] -> print_string x; print_string ", "; print_string y; print_string "}"
+                | h::t -> print_string h; print_string ", "; aux t; 
+        in aux list
+;;
 

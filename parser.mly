@@ -39,13 +39,13 @@
 %type <Sdl.SS.t>  setCreation
 %%
 /* add types in own section */
-firstrun:
+parser_firstrun:
       STDIN firstrun     {$1 ^ (input_line stdin) ^ $3}
     | OTHERS firstrun    { $1 }
     | EOF
 ;
 
-main:
+parser_main:
     expr EOF                      { $1 }
 ;
 

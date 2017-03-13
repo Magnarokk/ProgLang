@@ -7,7 +7,7 @@ let string_of_id s = String.sub 1 1;;
 
 }
 (* add types *)
-rule token = parse
+rule lexer_token = parse
       [' ' '\t' '\n']          {token lexbuf}    (* skip blanks *)
     | '{'                 {LCURLY}
     | '}'                 {RCURLY}
@@ -34,7 +34,7 @@ rule token = parse
     | "THISSTUFF"         {IN}
     | '!'                 { SEQ }
     | eof                 { EOF }
-and firstrun = parse 
+and lexer_firstrun = parse 
     | "READFROM"          {STDIN}
     | _                   {OTHERS(Lexing.lexeme lexbuf)}
 

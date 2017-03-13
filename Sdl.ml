@@ -73,10 +73,6 @@ let newStarSet str count =
     in makeSet "" count
 ;;
 (* args: string int returns: set (SS.t) with int elements*)
-
-(* create print function for language *)
-(* args: (sdlTerm, sdlTerm) (set pair) and prints it out in correct format to sdout *)
-(* [] prints nothing, [] sdlterm print sdlterm (vice versa), sdlterm sdlterm print both sdlterm *)
     
 
 (* union function *)
@@ -89,7 +85,6 @@ let union set1 set2 =
 let inter set1 set2 =
     SS.inter set1 set2
 ;;
-(* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
 (* concat function *)
 let concat set1 set2 =
@@ -103,9 +98,6 @@ let concat set1 set2 =
     | (l :: ls) , (r :: rs) -> ((l ^ r) :: zip (ls,rs)) in
     SS.of_list (zip pairList)
 ;;
-(* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
-(* convert sets to lists for ease and interate through both concat each element *)
-(* up to int. Then convert back to set *)
 
 (* prefix adds a letter to the start of every element in set *)
 (* postfix *)

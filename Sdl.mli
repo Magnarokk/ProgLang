@@ -19,7 +19,7 @@ type sdlTerm =
    val newEmptySet : SS.t
    val newStarSet : SS.elt -> int -> SS.t
 
-   val print_term : sdlTerm -> unit
-
    val typeProg : sdlTerm -> sdlType
    val eval : sdlTerm -> sdlTerm
+
+   val print_term : sdlTerm -> unit

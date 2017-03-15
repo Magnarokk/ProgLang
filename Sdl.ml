@@ -67,7 +67,7 @@ let newStarSet str count =
     let rec makeSet element counter =
         if counter > 0 then begin
             letterStarSet := List.fold_right SS.add [element] !letterStarSet;
-            makeSet (element^"a") (counter-1) end 
+            makeSet (element ^ "a") (counter-1) end 
         else
             !letterStarSet;
     in makeSet "" count
@@ -99,7 +99,7 @@ let concat set1 set2 =
 ;;
 
 (* prefix *)
-let prefix pre set
+let prefix pre set =
     let list = SS.elements set in
     let rec addPrefix list = match element with
       [] -> []
@@ -109,7 +109,7 @@ let prefix pre set
 (* adds a letter to the start of every element in set *)
 
 (* postfix *)
-let postfix post set
+let postfix post set =
     let list = SS.elements set in
     let rec addPostfix list = match element with
       [] -> []
@@ -119,7 +119,18 @@ let postfix post set
 (* adds a letter to the end of every element in set *)
 
 (* reduce *)
-let reduce 
+let reduce set limit =
+    let newSet = ref(SS.empty) in
+    let list = SS.elements set in
+    let rec sortElements list =
+        (* sort that shit *) in
+    let rec reduceSet list =
+        if limit > 0 then begin
+            newSet := List.fold_right SS.add [element] !newSet;
+            makeSet (element ^ "a") (limit-1) end 
+        else
+            !newSet;
+
 (* reduces set to specified size, also order elements alphabetically before reduction *)
 
 (*type checker *)

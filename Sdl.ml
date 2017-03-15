@@ -73,7 +73,6 @@ let newStarSet str count =
     in makeSet "" count
 ;;
 (* args: string int returns: set (SS.t) with int elements*)
-    
 
 (* union function *)
 let union set1 set2 =
@@ -99,10 +98,29 @@ let concat set1 set2 =
     SS.of_list (zip pairList)
 ;;
 
-(* prefix adds a letter to the start of every element in set *)
-(* postfix *)
-(* reduce: reduces set to specified size, also order elements alphabetically before reduction*)
+(* prefix *)
+let prefix pre set
+    let list = SS.elements set in
+    let rec addPrefix list = match element with
+      [] -> []
+    | (e :: l) -> ( pre ^ e ) :: addPrefix (l) in
+    SS.of_list (addPrefix list)
+;;
+(* adds a letter to the start of every element in set *)
 
+(* postfix *)
+let postfix post set
+    let list = SS.elements set in
+    let rec addPostfix list = match element with
+      [] -> []
+    | (e :: l) -> ( e ^ post ) :: addPostfix (l) in
+    SS.of_list (addPostfix list)
+;;
+(* adds a letter to the end of every element in set *)
+
+(* reduce *)
+let reduce 
+(* reduces set to specified size, also order elements alphabetically before reduction *)
 
 (*type checker *)
 let rec typeOf env e = match e with

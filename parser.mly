@@ -71,8 +71,6 @@ setCreation:
     | setCreation UNION setCreation  { SdlUnion($1, $3) }
     | setCreation INTER setCreation  { SdlInter($1, $3) }
     | setCreation CONCAT setCreation { SdlConcat($1, $3) }
-    | setCreation PREFIX FIXLETTER { SdlPrefix($1, $3) }
-    | setCreation POSTFIX FIXLETTER { SdlPostfix($1, $3) }
     | REDUCE setCreation              { SdlReduce($1) }
 ;
 setExpr:

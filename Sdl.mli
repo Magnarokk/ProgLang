@@ -9,8 +9,6 @@ type sdlTerm =
    | SdlUnion of sdlTerm * sdlTerm
    | SdlInter of sdlTerm * sdlTerm
    | SdlConcat of sdlTerm * sdlTerm
-   | SdlPrefix of sdlTerm * string
-   | SdlPostfix of sdlTerm * string
    | SdlReduce of SS.t
    | Set of SS.t
    | Seq of sdlTerm * sdlTerm 

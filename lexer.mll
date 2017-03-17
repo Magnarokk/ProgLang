@@ -22,9 +22,7 @@ rule lexer_token = parse
     | 'U'                 {UNION}
     | 'I'                 {INTER}
     | 'C'                 {CONCAT}
-    | "PR"                {PREFIX}
     | 'R'                 {REDUCE}
-    | "PO"                {POSTFIX}
 
     | '@'                 {LANGTYPE}
     | '#'                 {INTTYPE}

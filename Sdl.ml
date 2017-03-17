@@ -17,8 +17,6 @@ type sdlTerm =
    | SdlUnion of sdlTerm * sdlTerm
    | SdlInter of sdlTerm * sdlTerm
    | SdlConcat of sdlTerm * sdlTerm
-   | SdlPrefix of sdlTerm * string
-   | SdlPostfix of sdlTerm * string
    | SdlReduce of SS.t
    | Set of SS.t
    | Seq of sdlTerm * sdlTerm 
@@ -98,25 +96,19 @@ let concat set1 set2 =
     SS.of_list (zip pairList)
 ;;
 
-(* prefix *)
-let prefix pre set =
-    let list = SS.elements set in
-    let rec addPrefix list = match element with
-      [] -> []
-    | (e :: l) -> ( pre ^ e ) :: addPrefix (l) in
-    SS.of_list (addPrefix list)
-;;
-(* adds a letter to the start of every element in set *)
+ let concat set1 set2 =
+    let list1 = SS.elements set1 in
+    let acc = SS.elements set2 in
 
-(* postfix *)
-let postfix post set =
-    let list = SS.elements set in
-    let rec addPostfix list = match element with
+    let rec accumulate str acc = match acc with
       [] -> []
-    | (e :: l) -> ( e ^ post ) :: addPostfix (l) in
-    SS.of_list (addPostfix list)
-;;
-(* adds a letter to the end of every element in set *)
+    | ah :: at -> ((str ^ ah) :: accumulate str at) in
+
+    let rec zip listPost acc = match listPost with 
+      [] -> []
+    | h :: t -> List.append (accumulate h acc) (zip t acc) in
+    
+    SS.of_list (zip list1 acc);;
 
 (* reduce *)
 let reduce set limit =
@@ -160,15 +152,6 @@ let rec typeOf env e = match e with
               SdlLang, SdlLang -> SdlLang
             | _ -> raise TypeError )
 
-    | SdlPrefix (e1,e2) ->
-        (match (typeOf env e1), (typeOf env e2) with
-              SdlLang, string -> SdlLang
-            | _ -> raise TypeError )
-    | SdlPostfix (e1,e2) ->
-        (match (typeOf env e1), (typeOf env e2) with
-              SdlLang, string -> SdlLang
-            | _ -> raise TypeError )
-
     | SdlConcat (e1,e2) ->
         (match (typeOf env e1), (typeOf env e2) with
               SdlLang, SdlLang -> SdlLang
@@ -202,14 +185,6 @@ let rec eval1 env e = match e with
     | (SdlConcat(Set(x),Set(y)))               -> (Set(concat(x,y)), env)
     | (SdlConcat(Set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (SdlConcat(Set(x),e2'),env')
     | (SdlConcat(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (SdlConcat(e1',e2),env')
-
-    | (SdlPrefix(Set(x),Set(y)))               -> (Set(prefix(x,y)), env)
-    | (SdlPrefix(Set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (SdlPrefix(Set(x),e2'),env')
-    | (SdlPrefix(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (SdlPrefix(e1',e2),env')
-
-    | (SdlPostfix(Set(x),Set(y)))               -> (Set(postfix(x,y)), env)
-    | (SdlPostfix(Set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (SdlPostfix(Set(x),e2'),env')
-    | (SdlPostfix(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (SdlPostfix(e1',e2),env')
 
     | (SdlReduce(Set(x)))                       -> (Set(reduce(x)), env)
     | (SdlReduce(e1))                           -> let (e1',env') = (eval1 env e1) in (SdlReduce(e1'),env')

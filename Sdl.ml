@@ -86,6 +86,11 @@ let inter set1 set2 =
     SS.inter set1 set2
 ;;
 
+let rec of_list l = match l with
+      [] -> SS.empty
+    | h :: t -> List.fold_right SS.add [h] (of_list t)
+;;
+
 (* concat function *)
  let concat set1 set2 =
     let list1 = SS.elements set1 in
@@ -101,7 +106,7 @@ let inter set1 set2 =
       [] -> []
     | h :: t -> List.append (accumulate h acc) (zip t acc) in
     
-    SS.of_list (zip list1 acc);;
+    of_list (zip list1 acc);;
 
 (* reduce *)
 let reduce set limit =

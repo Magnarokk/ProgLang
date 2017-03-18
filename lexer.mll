@@ -2,21 +2,21 @@
 open Parser        (* The type token is defined in parser.mli *)
 exception Eof
 
-let string_of_set s = String.sub 1 ((String.length s)-1);;
-let string_of_id s = String.sub 1 1;; 
+let string_of_set s = (String.sub s 1 ((String.length s)-1));;
+let string_of_id s = (String.sub s 1 1);; 
 
 }
 (* add types *)
 rule lexer_token = parse
-      [' ' '\t' '\n']          {token lexbuf}    (* skip blanks *)
+      [' ' '\t' '\n']          {lexer_token lexbuf}    (* skip blanks *)
     | '{'                 {LCURLY}
     | '}'                 {RCURLY}
     | ','                 {COMMA}
-    | ['a' - 'z']* as lt  {LETTER(lt)}
+    | ['a' - 'z']+ as lt  {LETTER(lt)}
 
     | 'F'['a' - 'z'] as fixLt {FIXLETTER(string_of_id fixLt)}
     | '*'['a' - 'z']+ as st {STARSET(string_of_set st)}
-    | '£'['a'-'z'] as id  {IDENT(string_of_id id)}
+    | '$'['a'-'z'] as id  {IDENT(string_of_id id)}
     | ':'                 {EMPTY}
 
     | 'U'                 {UNION}

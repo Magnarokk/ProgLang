@@ -2,22 +2,24 @@ exception LookupError ;;
 exception UnboundVariableError ;;
 exception Terminated ;;
 exception StuckTerm ;;
+exception TypeError;;
 
 open Printf;;
 (* for using sets *)
 module SS = Set.Make(String);;
 
-type sdlType = SdlInt | SdlLang
+type sdlType = SdlInt | SdlLang | Seq of sdlType * sdlType
 
 (* language terms *)
 type sdlTerm =
      SdlLet of string * sdlTerm * sdlTerm * sdlType
    | SdlVar of string
    | SdlNum of int 
+   | SdlStarSet of string * sdlTerm
    | SdlUnion of sdlTerm * sdlTerm
    | SdlInter of sdlTerm * sdlTerm
    | SdlConcat of sdlTerm * sdlTerm
-   | SdlReduce of SS.t
+   | SdlReduce of sdlTerm * sdlTerm
    | Set of SS.t
    | Seq of sdlTerm * sdlTerm 
 
@@ -35,7 +37,7 @@ type valContext = sdlTerm context
 type typeContext = sdlType context
 
 (* lookup variable value *)
-let rec lookup env str = match e with
+let rec lookup env str = match env with
       Env [] -> raise LookupError
     | Env ((name,thing) :: t) ->
             (match (name = str) with
@@ -76,6 +78,7 @@ let newStarSet str count =
 let union set1 set2 =
     SS.union set1 set2
 ;;
+
 (* args: two sets (SS.t) int returns: set (SS.t) with int number of elements *)
 
 (* inter function *)
@@ -84,26 +87,16 @@ let inter set1 set2 =
 ;;
 
 (* concat function *)
-let concat set1 set2 =
-    let list1 = SS.elements set1 in
-    let list2 = SS.elements set2 in
-    let pairList = (list1,list2) in
-    let rec zip pairOfList = match pairOfList with 
-      [] , [] -> []
-    | [] , ls  -> ls
-    | ls  , [] -> ls
-    | (l :: ls) , (r :: rs) -> ((l ^ r) :: zip (ls,rs)) in
-    SS.of_list (zip pairList)
-;;
-
  let concat set1 set2 =
     let list1 = SS.elements set1 in
     let acc = SS.elements set2 in
 
+    (* adds elements from second list to head of first *)
     let rec accumulate str acc = match acc with
       [] -> []
     | ah :: at -> ((str ^ ah) :: accumulate str at) in
 
+    (* creates concat list *)
     let rec zip listPost acc = match listPost with 
       [] -> []
     | h :: t -> List.append (accumulate h acc) (zip t acc) in
@@ -113,15 +106,16 @@ let concat set1 set2 =
 (* reduce *)
 let reduce set limit =
     let newSet = ref(SS.empty) in
-    let list = SS.elements set in
-    let rec sortElements list =
-        (* sort that shit *) in
-    let rec reduceSet list =
-        if limit > 0 then begin
-            newSet := List.fold_right SS.add [element] !newSet;
-            makeSet (element ^ "a") (limit-1) end 
+    let list1 = SS.elements set in
+    
+    let rec reduceSet alist alimit = match alist with
+          [] -> !newSet
+        | h :: t -> if alimit > 0 then begin
+            newSet := List.fold_right SS.add [h] !newSet;
+            reduceSet t (alimit-1) end 
         else
-            !newSet;
+            !newSet in
+    reduceSet list1 limit;;
 
 (* reduces set to specified size, also order elements alphabetically before reduction *)
 
@@ -129,7 +123,6 @@ let reduce set limit =
 let rec typeOf env e = match e with
       SdlNum (n) -> SdlInt
     | Set (s)    -> SdlLang
-    | SdlReduce (s)-> SdlLang
     | SdlVar (x) -> (try lookup env x with LookupError -> raise TypeError)
 
     | SdlLet (x, e1, e2, t) ->
@@ -151,15 +144,20 @@ let rec typeOf env e = match e with
         (match (typeOf env e1), (typeOf env e2) with
               SdlLang, SdlLang -> SdlLang
             | _ -> raise TypeError )
-
-    | SdlConcat (e1,e2) ->
-        (match (typeOf env e1), (typeOf env e2) with
-              SdlLang, SdlLang -> SdlLang
-            | _ -> raise TypeError )
     
+    | SdlReduce (e1,e2) ->
+        (match (typeOf env e1), (typeOf env e2) with
+              SdlLang, SdlInt -> SdlLang
+            | _ -> raise TypeError )
+
     | Seq (e1,e2) ->
         (match (typeOf env e1), (typeOf env e2) with
-              SdlLang, SdlLang -> Seq(SdlLang, SdlLang)
+              SdlLang, SdlLang -> Seq(SdlLang,SdlLang)
+            | _ -> raise TypeError )
+
+    | SdlStarSet (e1,e2) ->
+        (match (typeOf env e2) with
+                SdlInt -> SdlLang
             | _ -> raise TypeError )
 ;;
 
@@ -171,24 +169,27 @@ let rec eval1 env e = match e with
     | (SdlVar (s)) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)
     | (Set(s))     -> raise Terminated
     
-    | (SdlLet(x,e1,e2,t)) when (isValue(e1)) -> (e2, addBinding emv x e1)
+    | (SdlLet(x,e1,e2,t)) when (isValue(e1)) -> (e2, addBinding env x e1)
     | (SdlLet(x,e1,e2,t))                    -> let (e1', env') = (eval1 env e1) in (SdlLet(x,e1',e2,t), env')
 
-    | (SdlUnion(Set(x),Set(y)))               -> (Set(union(x,y)), env)
+    | (SdlUnion(Set(x),Set(y)))               -> (Set(union x y), env)
     | (SdlUnion(Set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (SdlUnion(Set(x),e2'),env')
     | (SdlUnion(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (SdlUnion(e1',e2),env')
 
-    | (SdlInter(Set(x),Set(y)))               -> (Set(inter(x,y)), env)
+    | (SdlInter(Set(x),Set(y)))               -> (Set(inter x y), env)
     | (SdlInter(Set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (SdlInter(Set(x),e2'),env')
     | (SdlInter(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (SdlInter(e1',e2),env')
 
-    | (SdlConcat(Set(x),Set(y)))               -> (Set(concat(x,y)), env)
+    | (SdlConcat(Set(x),Set(y)))               -> (Set(concat x y), env)
     | (SdlConcat(Set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (SdlConcat(Set(x),e2'),env')
     | (SdlConcat(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (SdlConcat(e1',e2),env')
 
-    | (SdlReduce(Set(x)))                       -> (Set(reduce(x)), env)
-    | (SdlReduce(e1))                           -> let (e1',env') = (eval1 env e1) in (SdlReduce(e1'),env')
+    | (SdlReduce(Set(x),SdlNum(y)))            -> (Set(reduce x y), env)
+    | (SdlReduce(e1,SdlNum(y)))                -> let (e1',env') = (eval1 env e1) in (SdlReduce(e1', SdlNum(y)),env')
 
+    | (SdlStarSet(x, SdlNum(y)))          -> (Set(newStarSet x y), env)    
+    | (SdlStarSet(x,e2))                  -> let (e2', env') = (eval1 env e2) in (SdlStarSet(x,e2'), env')
+    
     | (Seq(Set(x),Set(y)))                      -> raise Terminated
     | (Seq(Set(x),e2))                          -> let (e2',env') = (eval1 env e2) in (Seq(Set(x),e2'),env')
     | (Seq(e1,e2))                              -> let (e1',env') = (eval1 env e1) in (Seq(e1',e2),env')
@@ -208,11 +209,6 @@ let rec evalloop env e =
 let eval e = evalloop (Env []) e
 ;; 
 
-let print_term val = match val with 
-    | (Set s) -> print_set s
-    | (Seq(Set(x),Set(y))) -> print_set x; print_newline(); print_set y 
-;;
-
 (* prints set in correct form *)
 let print_set set =
         let list = SS.elements set in
@@ -223,5 +219,10 @@ let print_set set =
                 | [x;y] -> print_string x; print_string ", "; print_string y; print_string "}"
                 | h::t -> print_string h; print_string ", "; aux t; 
         in aux list
+;;
+
+let print_term value = match value with 
+    | (Set s) -> print_set s
+    | (Seq(Set(x),Set(y))) -> print_set x; print_newline(); print_set y 
 ;;
 

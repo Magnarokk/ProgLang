@@ -2,7 +2,7 @@
     open Sdl
 %}
 %token LANGTYPE INTTYPE
-%token EOF
+%token EOF EOL
 %token LCURLY RCURLY COMMA EMPTY
 %token <string> LETTER FIXLETTER IDENT
 %token UNION INTER CONCAT PREFIX REDUCE
@@ -19,15 +19,15 @@
 %nonassoc STARSET
 %nonassoc ASSIGN IN
 %left COMMA
-%nonassoc OTHERS
 %left STDIN
+%nonassoc OTHERS
+%left EOL
 %start parser_firstrun
 %type <string> parser_firstrun
 %start parser_main
 %type <Sdl.sdlTerm> parser_main
 %type <Sdl.sdlTerm> expr
 %type <Sdl.sdlType> type_spec
-%type <Sdl.sdlTerm>  setCreation
 %%
 parser_main: expr EOF    { $1 }
 ;
@@ -40,23 +40,21 @@ type_spec:
 ;
 
 expr:
-      ASSIGN type_spec IDENT expr2 IN expr { SdlLet($3,$4,$6,$2)}
+      ASSIGN type_spec IDENT setCreation IN expr { SdlLet($3,$4,$6,$2)}
     | setCreation                    { $1 }
-    | IDENT                          { SdlVar($1) }
     | setCreation SEQ setCreation    { Seq($1,$3)}
 ;
-expr2:
-      INT                            { SdlNum($1) }
-    | setCreation                    { $1 }
-;
+
 setCreation:
-      LCURLY setExpr RCURLY          { $2 }
-    | STARSET IDENT                  { SdlStarSet($1,SdlVar($2)) }
+      INT                            { SdlNum($1) }
+    | IDENT                          { SdlVar($1) }
+    | LCURLY setExpr RCURLY          { $2 }
+    | STARSET setCreation            { SdlStarSet($1,$2) }
     | LCURLY RCURLY                  { Set(newEmptySet) }
     | setCreation UNION setCreation  { SdlUnion($1, $3) }
     | setCreation INTER setCreation  { SdlInter($1, $3) }
     | setCreation CONCAT setCreation { SdlConcat($1, $3) }
-    | REDUCE IDENT setCreation %prec REDUCTION { SdlReduce($3, SdlVar($2)) }
+    | REDUCE setCreation setCreation %prec REDUCTION { SdlReduce($3, $2) }
 ;
 setExpr:
       LETTER                { Set(newSet $1) }
@@ -65,7 +63,12 @@ setExpr:
 ;
 
 parser_firstrun:
-      STDIN parser_firstrun     {(input_line stdin) ^ $2}
-    | OTHERS parser_firstrun    { $1 ^ $2 }
-    | EOF                { "" }
+    firstrun parser_firstrun {$1 ^ $2}
+    | EOF                       { "" }
+;
+
+firstrun:
+      STDIN firstrun {(input_line stdin) ^ $2}
+    | OTHERS firstrun    { $1 ^ $2 }
+    | EOL                { "\n"}
 ;

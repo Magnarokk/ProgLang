@@ -8,7 +8,7 @@ let string_of_id s = (String.sub s 1 1);;
 }
 (* add types *)
 rule lexer_token = parse
-      [' ' '\t' '\n']          {lexer_token lexbuf}    (* skip blanks *)
+      [' ' '\t' '\n' '(' ')' '<' '>']      {lexer_token lexbuf}    (* skip blanks *)
     | '{'                 {LCURLY}
     | '}'                 {RCURLY}
     | ','                 {COMMA}
@@ -34,4 +34,6 @@ rule lexer_token = parse
     | eof                 { EOF }
 and lexer_firstrun = parse 
     | "READFROM"          {STDIN}
+    | eof                 {EOF}
+    | "\n"                {EOL}
     | _                   {OTHERS(Lexing.lexeme lexbuf)}

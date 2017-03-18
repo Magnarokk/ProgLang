@@ -185,7 +185,8 @@ let rec eval1 env e = match e with
     | (SdlConcat(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (SdlConcat(e1',e2),env')
 
     | (SdlReduce(Set(x),SdlNum(y)))            -> (Set(reduce x y), env)
-    | (SdlReduce(e1,SdlNum(y)))                -> let (e1',env') = (eval1 env e1) in (SdlReduce(e1', SdlNum(y)),env')
+    | (SdlReduce(Set(x),e2))                   -> let (e2',env') = (eval1 env e2) in (SdlReduce(Set(x), e2'),env')
+    | (SdlReduce(e1,e2))                       -> let (e1',env') = (eval1 env e1) in (SdlReduce(e1', e2),env')
 
     | (SdlStarSet(x, SdlNum(y)))          -> (Set(newStarSet x y), env)    
     | (SdlStarSet(x,e2))                  -> let (e2', env') = (eval1 env e2) in (SdlStarSet(x,e2'), env')
@@ -213,11 +214,20 @@ let eval e = evalloop (Env []) e
 let print_set set =
         let list = SS.elements set in
         print_string "{";
+
+        let checkforEmpty str =
+            if (str = "") then
+                ":"
+            else
+                str
+        in
+
         let rec aux l =
             match l with
                   [] -> print_string "}"
-                | [x;y] -> print_string x; print_string ", "; print_string y; print_string "}"
-                | h::t -> print_string h; print_string ", "; aux t; 
+                | [x] -> print_string (checkforEmpty x); print_string "}"
+                | [x;y] -> print_string (checkforEmpty x); print_string ", "; print_string (checkforEmpty y); print_string "}"
+                | h::t -> print_string (checkforEmpty h); print_string ", "; aux t; 
         in aux list
 ;;
 

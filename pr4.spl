@@ -1,0 +1,7 @@
+ASSIGN <@ $l> READFROM NEXT
+ASSIGN <# $n> READFROM NEXT
+
+ASSIGN <@ $a> (*a $n) NEXT
+
+R $n ($l C $a) !
+0

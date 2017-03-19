@@ -1,0 +1,10 @@
+Sdl.cmi :
+parser.cmi : Sdl.cmi
+Sdl.cmo : Sdl.cmi
+Sdl.cmx : Sdl.cmi
+lexer.cmo : parser.cmi
+lexer.cmx : parser.cmx
+mysplinterpreter.cmo : Sdl.cmi parser.cmi lexer.cmo
+mysplinterpreter.cmx : Sdl.cmx parser.cmx lexer.cmx
+parser.cmo : Sdl.cmi parser.cmi
+parser.cmx : Sdl.cmx parser.cmi

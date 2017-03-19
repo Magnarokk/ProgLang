@@ -48,6 +48,6 @@ val newSet : SS.elt -> SS.t
 val newEmptySet : SS.t
 val newStarSet : 'a -> int -> SS.t
 val typeProg : sdlTerm -> sdlType
-val eval : sdlTerm -> sdlTerm
 val print_set : SS.t -> unit
+val eval : sdlTerm -> unit
 val print_term : sdlTerm -> unit

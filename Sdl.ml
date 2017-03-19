@@ -157,7 +157,8 @@ let rec typeOf env e = match e with
 
     | Seq (e1,e2) ->
         (match (typeOf env e1), (typeOf env e2) with
-              SdlLang, SdlLang -> Seq(SdlLang,SdlLang)
+              SdlLang, Seq(x,y) -> Seq(SdlLang,SdlLang)
+            | SdlLang, SdlInt -> Seq(SdlLang,SdlInt)
             | _ -> raise TypeError )
 
     | SdlStarSet (e1,e2) ->
@@ -168,11 +169,30 @@ let rec typeOf env e = match e with
 
 let typeProg e = typeOf (Env []) e
 ;;
-    
+
+let print_set set =
+        let list = SS.elements set in
+        print_string "{";
+
+        let checkforEmpty str =
+            if (str = "") then
+                ":"
+            else
+                str
+        in
+
+        let rec aux l =
+            match l with
+                  [] -> print_string "}"
+                | [x] -> print_string (checkforEmpty x); print_string "}"
+                | [x;y] -> print_string (checkforEmpty x); print_string ", "; print_string (checkforEmpty y); print_string "}"
+                | h::t -> print_string (checkforEmpty h); print_string ", "; aux t; 
+        in aux list
+;;
+
 (* evaluator *)
 let rec eval1 env e = match e with
     | (SdlVar (s)) -> (try ((lookup env s), env) with LookupError -> raise UnboundVariableError)
-    | (Set(s))     -> raise Terminated
     
     | (SdlLet(x,e1,e2,t)) when (isValue(e1)) -> (e2, addBinding env x e1)
     | (SdlLet(x,e1,e2,t))                    -> let (e1', env') = (eval1 env e1) in (SdlLet(x,e1',e2,t), env')
@@ -196,8 +216,8 @@ let rec eval1 env e = match e with
     | (SdlStarSet(x, SdlNum(y)))          -> (Set(newStarSet x y), env)    
     | (SdlStarSet(x,e2))                  -> let (e2', env') = (eval1 env e2) in (SdlStarSet(x,e2'), env')
     
-    | (Seq(Set(x),Set(y)))                      -> raise Terminated
-    | (Seq(Set(x),e2))                          -> let (e2',env') = (eval1 env e2) in (Seq(Set(x),e2'),env')
+    | (Seq(Set(x),SdlNum(n)))                   -> print_set x; print_newline(); raise Terminated
+    | (Seq(Set(x),Seq(e1,e2)))                  -> print_set x; print_newline(); (Seq(e1,e2),env)
     | (Seq(e1,e2))                              -> let (e1',env') = (eval1 env e1) in (Seq(e1',e2),env')
 
     | _ -> raise Terminated
@@ -208,7 +228,7 @@ let rec evalloop env e =
     try 
         (let(e',env') = (eval1 env e) in 
         (evalloop env' e')) 
-    with Terminated -> if (isValue e) then e else raise StuckTerm
+    with Terminated -> ()
 ;;
 
 (* initiate eval *)
@@ -216,25 +236,6 @@ let eval e = evalloop (Env []) e
 ;; 
 
 (* prints set in correct form *)
-let print_set set =
-        let list = SS.elements set in
-        print_string "{";
-
-        let checkforEmpty str =
-            if (str = "") then
-                ":"
-            else
-                str
-        in
-
-        let rec aux l =
-            match l with
-                  [] -> print_string "}"
-                | [x] -> print_string (checkforEmpty x); print_string "}"
-                | [x;y] -> print_string (checkforEmpty x); print_string ", "; print_string (checkforEmpty y); print_string "}"
-                | h::t -> print_string (checkforEmpty h); print_string ", "; aux t; 
-        in aux list
-;;
 
 let print_term value = match value with 
     | (Set s) -> print_set s

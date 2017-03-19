@@ -28,8 +28,8 @@ rule lexer_token = parse
     | '#'                 {INTTYPE}
 
     | ['0' - '9']+ as num {INT(int_of_string num)}
-    | "ASS2"              {ASSIGN}
-    | "THISSTUFF"         {IN}
+    | "ASSIGN"            {ASSIGN}
+    | "NEXT"              {IN}
     | '!'                 { SEQ }
     | eof                 { EOF }
 and lexer_firstrun = parse 

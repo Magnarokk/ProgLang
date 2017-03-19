@@ -13,9 +13,9 @@
 %token ASSIGN IN SEQ
 %nonassoc EOF
 %left SEQ
+%nonassoc REDUCE REDUCTION
 %left CONCAT
 %left UNION INTER
-%nonassoc REDUCE REDUCTION
 %nonassoc STARSET
 %nonassoc ASSIGN IN
 %left COMMA
@@ -41,8 +41,8 @@ type_spec:
 
 expr:
       ASSIGN type_spec IDENT setCreation IN expr { SdlLet($3,$4,$6,$2)}
-    | setCreation                    { $1 }
-    | setCreation SEQ setCreation    { Seq($1,$3)}
+    | setCreation SEQ expr    { Seq($1,$3)}
+    | INT                     { SdlNum($1)}
 ;
 
 setCreation:

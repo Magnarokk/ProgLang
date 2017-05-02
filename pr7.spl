@@ -1,0 +1,8 @@
+ASSIGN <@ $j> READFROM NEXT
+ASSIGN <@ $k> READFROM NEXT
+ASSIGN <@ $l> READFROM NEXT
+ASSIGN <# $n> READFROM NEXT
+
+R $n (($j I $k) U $l) !
+R $n ($j I ($l U $l)) !
+0
